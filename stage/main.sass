@@ -1,0 +1,66 @@
+@import "normalize"
+
+// Intialize Colors Variables
+body
+  --bg: #181824
+  --task-bg: #25273c
+  --gradient-one: hsl(192, 100%, 67%)
+  --gradient-two: hsl(280, 87%, 65%)
+  --hight-contrast-text: #cdcfe8
+  --low-contrast-text: #5f607d
+  --active-text: hsl(220, 98%, 61%)
+  &.light
+    --bg: #fafafa
+    --task-bg: #ffffff
+    --high-contrast-text: #9997aa
+
+$bg: var(--bg)
+$task-bg: var(--task-bg)
+$gradient-one: var(--gradient-one)
+$gradient-two: var(--gradient-two)
+$high-contrast-text: var(--high-contrast-text)
+$low-contrast-text: var(--low-contrast-text)
+$active-text: var(--active-text)
+
+// Global Rules
+@mixin md-screens()
+  @media (min-width: 60rem)
+    @content
+
+body
+  font-family: 'Josefin Sans', sans-serif
+  background-color: $bg
+  background-repeat: no-repeat
+  background-size: 100% auto
+  background-image: url("images/bg-mobile-dark.jpg")
+  &.light
+    background-image: url("images/bg-mobile-light.jpg")
+  @include md-screens
+    background-image: url("images/bg-desktop-dark.jpg")
+    &.light
+      background-image: url("images/bg-desktop-light.jpg")
+
+// Content Container Rules
+.container
+  margin: min(3rem, 10vw) auto 0
+  width: 100%
+  padding: 1rem
+  max-width: 40rem
+
+// Header Rules
+header
+  display: flex
+  justify-content: space-between
+  align-items: center
+  margin-bottom: 1.5rem
+
+  .logo
+    text-transform: uppercase
+    color: #fff
+    font-size: 2.5rem
+    letter-spacing: .3em
+    @include md-screens 
+      font-size: 3rem
+
+  #switch-theme 
+    cursor: pointer
