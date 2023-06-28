@@ -6,13 +6,18 @@ body
   --task-bg: #25273c
   --gradient-one: hsl(192, 100%, 67%)
   --gradient-two: hsl(280, 87%, 65%)
-  --hight-contrast-text: #cdcfe8
+  --high-contrast-text: #cdcfe8
   --low-contrast-text: #5f607d
+  --low-contrast-clr: #5f607d
+  --border-clr: #37394e
   --active-text: hsl(220, 98%, 61%)
   &.light
     --bg: #fafafa
     --task-bg: #ffffff
-    --high-contrast-text: #9997aa
+    --high-contrast-text: #3c3d48
+    --low-contrast-text: #abaab2
+    --low-contrast-clr: #edecf0
+    --border-clr: #e6e5e9
 
 $bg: var(--bg)
 $task-bg: var(--task-bg)
@@ -20,6 +25,8 @@ $gradient-one: var(--gradient-one)
 $gradient-two: var(--gradient-two)
 $high-contrast-text: var(--high-contrast-text)
 $low-contrast-text: var(--low-contrast-text)
+$low-contrast-clr: var(--low-contrast-clr)
+$border-clr: var(--border-clr)
 $active-text: var(--active-text)
 
 // Global Rules
@@ -28,6 +35,9 @@ $active-text: var(--active-text)
     @content
 
 body
+  min-width: 100%
+  width: fit-content
+  overflow-x: auto
   font-family: 'Josefin Sans', sans-serif
   background-color: $bg
   background-repeat: no-repeat
@@ -64,3 +74,76 @@ header
 
   #switch-theme 
     cursor: pointer
+
+// Main(Tasks) Section Rules
+main
+  .tasks-field
+    margin-top: 1.5rem
+    overflow: hidden
+
+  .tasks-field, .input-field
+    border-radius: .4rem
+
+  .task-style, .task
+    background-color: $task-bg
+    display: flex
+    align-items: center
+    padding: 1em
+    gap: 1em
+      
+    input[type="text"], p
+      flex-grow: 1
+      width: 0
+      background: unset
+      border: unset
+      outline: unset
+      font-size: 1.4em
+      color: $high-contrast-text
+      caret-color: $active-text
+      &::placeholder
+        color: $low-contrast-text
+
+    .check-btn
+      flex-shrink: 0
+      display: block
+      width: 2em
+      aspect-ratio: 1 / 1
+      border-radius: 100%
+      overflow: hidden
+      position: relative
+      cursor: pointer
+      &::before
+        content: ""
+        position: absolute
+        inset: 0
+        background-color: $low-contrast-clr
+      &:hover::before
+        background-image: linear-gradient(125deg, $gradient-one, $gradient-two)
+      &::after
+        content: ""
+        position: absolute
+        inset: 1px
+        border-radius: 100%
+        background-color: $task-bg
+    &.checked .check-btn::after
+      inset: 0
+      background: url("images/icon-check.svg") no-repeat center / 50%, linear-gradient(125deg, $gradient-one, $gradient-two)
+      display: grid
+      place-items: center
+  
+  .task
+    &:not(:last-child)
+      border-bottom: 1px solid $border-clr
+
+    .remove-btn
+      cursor: pointer
+    @media (hover: hover) and (pointer: fine)
+      .remove-btn
+        visibility: hidden
+      &:hover .remove-btn
+        visibility: visible
+    &.checked p
+      color: $low-contrast-text
+      text-decoration: line-through 
+      opacity: .6
+    

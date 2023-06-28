@@ -15,6 +15,13 @@ html(lang="en")
         h1.logo TODO
         img#switch-theme(src="images/icon-sun.svg", alt="Switch Theme", data-alt-src="images/icon-moon.svg")
 
+      main
+        .input-field.task-style(role="Create a new todo")
+          span.check-btn(role="Subbmit task button")
+          input(type="text", role="New task's value", placeholder="Create a new todo...")
+
+        .tasks-field
+
 
 
     script(src="app.js")
