@@ -14,25 +14,47 @@ function moveArrEle(arr, fromIndex, beforeIndex) {
 
 // Remove Tasks
 function removeTask(task) {
-  task.remove();
   tasks.splice(tasks.indexOf(task), 1);
+  if (completed.includes(task)) {
+    completed.splice(completed.indexOf(task), 1);
+  }
+  if (noncompleted.includes(task)) {
+    noncompleted.splice(noncompleted.indexOf(task), 1);
+  }
+  task.remove();
   countChecked();
 }
 
 // Create Tasks
-const tasks = [];
+const tasks = [],
+  completed = [],
+  noncompleted = [];
 function createTask(isChecked, content) {
   // Append To Tasks Field
   const taskElement = document.createElement("div");
-  taskElement.className = isChecked ? "task checked" : "task";
   taskElement.role = `Task`;
   taskElement.draggable = true;
+  tasks.push(taskElement);
+  if (isChecked) {
+    taskElement.className = "task checked";
+    completed.push(taskElement);
+  } else {
+    taskElement.className = "task";
+    noncompleted.push(taskElement);
+  }
 
   const checkBtn = document.createElement("span");
   checkBtn.className = "check-btn";
   checkBtn.role = "Check the task Button";
   checkBtn.onclick = function () {
     this.parentElement.classList.toggle("checked");
+    if (this.parentElement.classList.contains("checked")) {
+      completed.push(taskElement);
+      noncompleted.splice(noncompleted.indexOf(taskElement), 1);
+    } else {
+      noncompleted.push(taskElement);
+      completed.splice(completed.indexOf(taskElement), 1);
+    }
     countChecked();
   };
 
@@ -52,35 +74,43 @@ function createTask(isChecked, content) {
 
   taskElement.append(checkBtn, taskContent, removeBtn);
 
-  tasks.push(taskElement);
   document.getElementById("tasks").appendChild(taskElement);
   countChecked();
 
   // Drag Event
-  let overd = null; // when the mouse is over another task
   taskElement.addEventListener("drag", (e) => {
-    if (tasks.length > 1 && document.getElementById("tasks").classList.contains("all-tasks")) {
+    let overd = null; // when the mouse is over another task
+    let list = null;
+    if (usedFilter == "all") {
+      list = tasks;
+    } else if (usedFilter == "active") {
+      list = noncompleted;
+    } else if (usedFilter == "completed") {
+      list = completed;
+    }
+
+    if (list.length > 1) {
       // If The Mouse Over Any Task
-      tasks.forEach((t) => {
+      list.forEach((t) => {
         if (e.y >= t.offsetTop && e.y < t.offsetTop + t.offsetHeight) {
           overd = t;
         }
       });
 
       // If The Mouse Height The First Task
-      const firstTask = tasks[0];
+      const firstTask = list[0];
       if (e.y < firstTask.offsetTop && e.y) {
         overd = "top";
       }
 
       // If The Mouse Lower The Last Task
-      const lastTask = tasks[tasks.length - 1];
+      const lastTask = list[list.length - 1];
       if (e.y > lastTask.offsetTop + lastTask.offsetHeight) {
         overd = "bottom";
       }
 
       // Move The Task
-      let taskIndex = tasks.indexOf(taskElement);
+      let taskIndex = list.indexOf(taskElement);
       if (overd == "top") {
         if (firstTask != taskElement) {
           // Replace Task In DOM
@@ -88,7 +118,7 @@ function createTask(isChecked, content) {
           firstTask.insertAdjacentElement("beforeBegin", taskElement);
 
           // Replace Task In Arrays
-          moveArrEle(tasks, taskIndex, -1);
+          moveArrEle(list, taskIndex, -1);
         }
       } else if (overd == "bottom") {
         if (lastTask != taskElement) {
@@ -97,15 +127,15 @@ function createTask(isChecked, content) {
           lastTask.insertAdjacentElement("afterEnd", taskElement);
 
           // Replace Task In Arrays
-          moveArrEle(tasks, taskIndex, tasks.length - 1);
+          moveArrEle(list, taskIndex, list.length - 1);
         }
-      } else if (overd != taskElement && overd != tasks[tasks.indexOf(taskElement) - 1] && overd != null) {
+      } else if (overd != taskElement && overd != list[list.indexOf(taskElement) - 1] && overd != null) {
         // Replace Task In DOM
         taskElement.remove();
         overd.insertAdjacentElement("afterEnd", taskElement);
 
         // Replace Task In Arrays
-        moveArrEle(tasks, taskIndex, tasks.indexOf(overd));
+        moveArrEle(list, taskIndex, list.indexOf(overd));
       }
     }
   });
@@ -131,31 +161,42 @@ for (let i = 1; i < 7; i++) {
 // Info Section
 // -- Count Checked Tasks
 function countChecked() {
-  let count = 0;
-  tasks.forEach((task) => {
-    if (task.classList.contains("checked")) {
-      count++;
-    }
-  });
-  document.getElementById("unchecked-count").innerText = tasks.length - count;
+  document.getElementById("unchecked-count").innerText = noncompleted.length;
 }
+
 // -- Clear Completed Tasks
 document.getElementById("clear").onclick = () => {
-  tasks.forEach((task) => {
-    if (task.classList.contains("checked")) {
-      removeTask(task);
-    }
+  completed.forEach((task) => {
+    tasks.splice(tasks.indexOf(task), 1);
+    task.remove();
   });
+  completed.length = 0;
 };
+
 // -- Filter Tasks
+let usedFilter = "all";
 const filters = Array.from(document.getElementById("filters").children);
 filters.forEach((filter) => {
   filter.onclick = () => {
+    // Remove All Filters
     filters.forEach((f) => {
       f.classList.remove("checked");
       document.getElementById("tasks").classList.remove(`${f.classList[0]}-tasks`);
     });
+
+    // Add The Checked Filter
     filter.classList.add("checked");
     document.getElementById("tasks").classList.add(`${filter.classList[0]}-tasks`);
+    usedFilter = filter.classList[0];
+
+    // Reorder Tasks
+    if (usedFilter == "all") {
+      tasks.length = 0;
+      tasks.splice(0, 0, ...noncompleted.concat(completed));
+      tasks.forEach((task) => {
+        task.remove();
+        document.getElementById("tasks").append(task);
+      });
+    }
   };
 });
