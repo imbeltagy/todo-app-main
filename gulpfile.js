@@ -21,9 +21,7 @@ gulp.task("compile-sass", () =>
 );
 
 // Redirect JS Files
-gulp.task("redirect-js", () =>
-  gulp.src("./stage/app.js").pipe(uglify()).pipe(gulp.dest("./docs/")).pipe(connect.reload())
-);
+gulp.task("redirect-js", () => gulp.src("./stage/app.js").pipe(gulp.dest("./docs/")).pipe(connect.reload()));
 
 // Redirect Images
 gulp.task("redirect-images", () => gulp.src("./stage/images/**/*.*").pipe(gulp.dest("./docs/images/")));
