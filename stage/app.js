@@ -154,10 +154,6 @@ inputField.onkeydown = (e) => {
   }
 };
 
-for (let i = 1; i < 7; i++) {
-  createTask(false, i);
-}
-
 // Info Section
 // -- Count Checked Tasks
 function countChecked() {
