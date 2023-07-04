@@ -105,8 +105,6 @@ $_radius: .4rem
     caret-color: $active-text
     &::placeholder
       color: $low-contrast-text
-  p
-    cursor: pointer
   &.checked p
     color: $low-contrast-text
     text-decoration: line-through 
@@ -189,6 +187,8 @@ $_radius: .4rem
     &.checked, &:hover
       color: $high-contrast-text
     
+#tasks.all-tasks .task p
+  cursor: pointer    
 #tasks.active-tasks .task.checked
   display: none
 #tasks.completed-tasks .task

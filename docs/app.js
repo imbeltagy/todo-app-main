@@ -136,8 +136,8 @@ function countChecked() {
     if (task.classList.contains("checked")) {
       count++;
     }
-    document.getElementById("unchecked-count").innerText = tasks.length - count;
   });
+  document.getElementById("unchecked-count").innerText = tasks.length - count;
 }
 // -- Clear Completed Tasks
 document.getElementById("clear").onclick = () => {
