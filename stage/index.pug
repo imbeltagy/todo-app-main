@@ -16,11 +16,23 @@ html(lang="en")
         img#switch-theme(src="images/icon-sun.svg", alt="Switch Theme", data-alt-src="images/icon-moon.svg")
 
       main
-        .input-field.task-style(role="Create a new todo")
+        #input.task-style(role="Create a new todo")
           span.check-btn(role="Subbmit task button")
           input(type="text", role="New task's value", placeholder="Create a new todo...")
 
-        .tasks-field
+        #tasks.allTasks
+
+        #info.task-style
+          span
+            span#unchecked-count 0
+            |  items left
+          
+          #filters.task-style
+            span.all.checked All
+            span.active Active
+            span.completed Completed
+
+          span#clear Clear Completed
 
 
 

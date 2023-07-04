@@ -29,9 +29,9 @@ $low-contrast-clr: var(--low-contrast-clr)
 $border-clr: var(--border-clr)
 $active-text: var(--active-text)
 
-// Global Rules
+// -- Global Rules
 @mixin md-screens()
-  @media (min-width: 60rem)
+  @media (min-width: 44rem)
     @content
 
 body
@@ -50,14 +50,14 @@ body
     &.light
       background-image: url("images/bg-desktop-light.jpg")
 
-// Content Container Rules
+// -- Content Container Rules
 .container
   margin: min(3rem, 10vw) auto 0
   width: 100%
   padding: 1rem
   max-width: 40rem
 
-// Header Rules
+// -- Header Rules
 header
   display: flex
   justify-content: space-between
@@ -75,78 +75,123 @@ header
   #switch-theme 
     cursor: pointer
 
-// Main(Tasks) Section Rules
-main
-  .tasks-field
-    margin-top: 1.5rem
-    overflow: hidden
+// -- Main(Tasks) Section Rules
+$_radius: .4rem
+#tasks
+  margin-top: 1.5rem
+  overflow: hidden
+  border-radius: $_radius $_radius 0 0
 
-  .tasks-field, .input-field
-    border-radius: .4rem
+#input
+  border-radius: $_radius
 
-  .task-style, .task
-    background-color: $task-bg
-    display: flex
-    align-items: center
-    padding: 1em
-    gap: 1em
-      
-    input[type="text"], p
-      flex-grow: 1
-      width: 0
-      background: unset
-      border: unset
-      outline: unset
-      font-size: 1.4em
-      color: $high-contrast-text
-      caret-color: $active-text
-      &::placeholder
-        color: $low-contrast-text
-    p
-      cursor: pointer
-    
-
-    .check-btn
-      flex-shrink: 0
-      display: block
-      width: 2em
-      aspect-ratio: 1 / 1
-      border-radius: 100%
-      overflow: hidden
-      position: relative
-      cursor: pointer
-      &::before
-        content: ""
-        position: absolute
-        inset: 0
-        background-color: $low-contrast-clr
-      &:hover::before
-        background-image: linear-gradient(125deg, $gradient-one, $gradient-two)
-      &::after
-        content: ""
-        position: absolute
-        inset: 1px
-        border-radius: 100%
-        background-color: $task-bg
-    &.checked .check-btn::after
-      inset: 0
-      background: url("images/icon-check.svg") no-repeat center / 50%, linear-gradient(125deg, $gradient-one, $gradient-two)
-      display: grid
-      place-items: center
+.task-style, .task
+  background-color: $task-bg
+  display: flex
+  align-items: center
+  padding: 1em
+  gap: 1em
   
-  .task
-    &:not(:last-child)
-      border-bottom: 1px solid $border-clr
-
-    .remove-btn
-      cursor: pointer
-    @media (hover: hover) and (pointer: fine)
-      .remove-btn
-        visibility: hidden
-      &:hover .remove-btn
-        visibility: visible
-    &.checked p
+  // Text Element (Input In input-field And p In Task)
+  input[type="text"], p
+    flex-grow: 1
+    width: 0
+    font-size: 1.4em
+    color: $high-contrast-text
+  input[type="text"]
+    background: unset
+    border: unset
+    outline: unset
+    caret-color: $active-text
+    &::placeholder
       color: $low-contrast-text
-      text-decoration: line-through 
-      opacity: .6
+  p
+    cursor: pointer
+  &.checked p
+    color: $low-contrast-text
+    text-decoration: line-through 
+    opacity: .6
+
+  // Check Button  Global Rules input-field And Task
+  .check-btn
+    flex-shrink: 0
+    display: block
+    width: 2em
+    aspect-ratio: 1 / 1
+    border-radius: 100%
+    overflow: hidden
+    position: relative
+    cursor: pointer
+    &::before
+      content: ""
+      position: absolute
+      inset: 0
+      background-color: $low-contrast-clr
+    &:hover::before
+      background-image: linear-gradient(125deg, $gradient-one, $gradient-two)
+    &::after
+      content: ""
+      position: absolute
+      inset: 1px
+      border-radius: 100%
+      background-color: $task-bg
+  &.checked .check-btn::after
+    inset: 0
+    background: url("images/icon-check.svg") no-repeat center / 50%, linear-gradient(125deg, $gradient-one, $gradient-two)
+    display: grid
+    place-items: center
+
+// Tasks Border
+.task
+  border-bottom: 1px solid $border-clr
+
+  // Remove Button (only on tasks)
+  .remove-btn
+    cursor: pointer
+  @media (hover: hover) and (pointer: fine)
+    .remove-btn
+      visibility: hidden
+    &:hover .remove-btn
+      visibility: visible
+
+#info
+  position: relative
+  justify-content: space-between
+  border-radius: 0 0 $_radius $_radius
+  color: $low-contrast-text
+
+  #filters
+    position: absolute
+    top: calc(100% + 1rem)
+    left: 50%
+    transform: translateX(-50%)
+    width: 100%
+    justify-content: center
+    border-radius: $_radius
+    @include md-screens
+      position: static
+      padding: 0
+      transform: unset
+      width: fit-content
+
+    span
+      font-weight: 700
+      cursor: pointer
+      user-select: none
+      &:hover
+        color: $high-contrast-text
+      &.checked
+        color: $active-text
+
+  #clear
+    cursor: pointer
+    user-select: none
+    &.checked, &:hover
+      color: $high-contrast-text
     
+#tasks.active-tasks .task.checked
+  display: none
+#tasks.completed-tasks .task
+  display: none
+  &.checked
+    display: flex

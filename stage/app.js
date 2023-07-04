@@ -12,6 +12,13 @@ function moveArrEle(arr, fromIndex, beforeIndex) {
   arr.splice(arr.indexOf(beforeEle) + 1, 0, ele);
 }
 
+// Remove Tasks
+function removeTask(task) {
+  task.remove();
+  tasks.splice(tasks.indexOf(task), 1);
+  countChecked();
+}
+
 // Create Tasks
 const tasks = [];
 function createTask(isChecked, content) {
@@ -26,6 +33,7 @@ function createTask(isChecked, content) {
   checkBtn.role = "Check the task Button";
   checkBtn.onclick = function () {
     this.parentElement.classList.toggle("checked");
+    countChecked();
   };
 
   const taskContent = document.createElement("p");
@@ -38,20 +46,20 @@ function createTask(isChecked, content) {
   removeBtn.className = "remove-btn";
   removeBtn.title = "Remove Task";
   removeBtn.role = "Remove task";
-  removeBtn.onclick = function () {
-    this.parentElement.remove();
-    tasks.splice(tasks.indexOf(taskElement), 1);
+  removeBtn.onclick = () => {
+    removeTask(taskElement);
   };
 
   taskElement.append(checkBtn, taskContent, removeBtn);
 
   tasks.push(taskElement);
-  document.querySelector(".tasks-field").appendChild(taskElement);
+  document.getElementById("tasks").appendChild(taskElement);
+  countChecked();
 
   // Drag Event
   let overd = null; // when the mouse is over another task
   taskElement.addEventListener("drag", (e) => {
-    if (tasks.length > 1) {
+    if (tasks.length > 1 && document.getElementById("tasks").classList.contains("all-tasks")) {
       // If The Mouse Over Any Task
       tasks.forEach((t) => {
         if (e.y >= t.offsetTop && e.y < t.offsetTop + t.offsetHeight) {
@@ -104,7 +112,7 @@ function createTask(isChecked, content) {
 }
 
 // Create Task From Input Field Value
-const inputField = document.querySelector(".input-field");
+const inputField = document.getElementById("input");
 function createTaskFromInputField() {
   createTask(false, inputField.querySelector("input").value);
   inputField.querySelector("input").value = "";
@@ -115,3 +123,39 @@ inputField.onkeydown = (e) => {
     createTaskFromInputField();
   }
 };
+
+for (let i = 1; i < 7; i++) {
+  createTask(false, i);
+}
+
+// Info Section
+// -- Count Checked Tasks
+function countChecked() {
+  let count = 0;
+  tasks.forEach((task) => {
+    if (task.classList.contains("checked")) {
+      count++;
+    }
+    document.getElementById("unchecked-count").innerText = tasks.length - count;
+  });
+}
+// -- Clear Completed Tasks
+document.getElementById("clear").onclick = () => {
+  tasks.forEach((task) => {
+    if (task.classList.contains("checked")) {
+      removeTask(task);
+    }
+  });
+};
+// -- Filter Tasks
+const filters = Array.from(document.getElementById("filters").children);
+filters.forEach((filter) => {
+  filter.onclick = () => {
+    filters.forEach((f) => {
+      f.classList.remove("checked");
+      document.getElementById("tasks").classList.remove(`${f.classList[0]}-tasks`);
+    });
+    filter.classList.add("checked");
+    document.getElementById("tasks").classList.add(`${filter.classList[0]}-tasks`);
+  };
+});
