@@ -140,6 +140,7 @@ function createTask(isChecked, content) {
     }
   });
 }
+createTask(false, "Create your first task.");
 
 // Create Task From Input Field Value
 const inputField = document.getElementById("input");
